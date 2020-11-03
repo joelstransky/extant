@@ -32,6 +32,17 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    We are using NodeJS
+    <script>
+      document.write(window.api.process.version);
+    </script>
+    and Electron
+    <script>
+      document.write(window.api.process.versions["electron"]);
+    </script>
+    .
+
+    <hr />
     <div id="root"></div>
     <!--
       This HTML file is a template.

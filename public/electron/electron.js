@@ -1,26 +1,34 @@
 const path = require("path");
-
-const { app, BrowserWindow } = require("electron");
+const fs = require("fs");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const isDev = require("electron-is-dev");
+var shell = require("shelljs");
+const { setMenu } = require("./menu");
+const { execute } = require("./process");
 // Conditionally include the dev tools installer to load React Dev Tools
-let installExtension, REACT_DEVELOPER_TOOLS; // NEW!
+let installExtension, REACT_DEVELOPER_TOOLS;
+let win;
 
 if (isDev) {
   const devTools = require("electron-devtools-installer");
   installExtension = devTools.default;
   REACT_DEVELOPER_TOOLS = devTools.REACT_DEVELOPER_TOOLS;
-} // NEW!
+}
+setMenu();
 // Handle creating/removing shortcuts on Windows when installing/uninstalling
 if (require("electron-squirrel-startup")) {
   app.quit();
-} // NEW!
-function createWindow() {
+}
+async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false, // is default value after Electron v5
+      contextIsolation: true, // protect against prototype pollution
+      enableRemoteModule: false, // turn off remote
+      preload: path.join(__dirname, "preload.js"), // use a preload script
     },
   });
 
@@ -32,10 +40,17 @@ function createWindow() {
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
 
+  ipcMain.on("toMain", (event, args) => {
+    console.log("toMain received");
+    execute();
+    win.webContents.send("fromMain", { success: "there was success" });
+  });
   // Open the DevTools.
-  if (isDev) {
-    win.webContents.openDevTools({ mode: "detach" });
-  }
+  win.webContents.on("did-frame-finish-load", () => {
+    if (isDev) {
+      win.webContents.openDevTools({ mode: "detach" });
+    }
+  });
 }
 
 // This method will be called when Electron has finished
