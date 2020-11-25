@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import Button from "@material-ui/core/Button";
+import { Button } from "@material-ui/core";
 // const electron = require("electron");
 // const ipcRenderer = electron.ipcRenderer;
 
@@ -19,18 +19,6 @@ function TestUI(props) {
     <div>
       <Button onClick={handleRunIt} variant="contained">
         Run It
-      </Button>
-      <Button variant="contained" color="primary">
-        Primary
-      </Button>
-      <Button variant="contained" color="secondary">
-        Secondary
-      </Button>
-      <Button variant="contained" disabled>
-        Disabled
-      </Button>
-      <Button variant="contained" color="primary" href="#contained-buttons">
-        Link
       </Button>
     </div>
   );

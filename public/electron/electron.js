@@ -6,13 +6,11 @@ var shell = require("shelljs");
 const { setMenu } = require("./menu");
 const { execute } = require("./process");
 // Conditionally include the dev tools installer to load React Dev Tools
-let installExtension, REACT_DEVELOPER_TOOLS;
+// let installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS;
 let win;
 
 if (isDev) {
-  const devTools = require("electron-devtools-installer");
-  installExtension = devTools.default;
-  REACT_DEVELOPER_TOOLS = devTools.REACT_DEVELOPER_TOOLS;
+  // const devTools = require("electron-devtools-installer");
 }
 setMenu();
 // Handle creating/removing shortcuts on Windows when installing/uninstalling
@@ -22,8 +20,8 @@ if (require("electron-squirrel-startup")) {
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 640,
+    height: 480,
     webPreferences: {
       nodeIntegration: false, // is default value after Electron v5
       contextIsolation: true, // protect against prototype pollution
@@ -48,7 +46,7 @@ async function createWindow() {
   // Open the DevTools.
   win.webContents.on("did-frame-finish-load", () => {
     if (isDev) {
-      win.webContents.openDevTools({ mode: "detach" });
+      win.webContents.openDevTools({ mode: "right" });
     }
   });
 }
@@ -60,7 +58,12 @@ app.whenReady().then(() => {
   createWindow();
 
   if (isDev) {
-    installExtension(REACT_DEVELOPER_TOOLS)
+    const {
+      default: installExtension,
+      REACT_DEVELOPER_TOOLS,
+      REDUX_DEVTOOLS,
+    } = require("electron-devtools-installer");
+    installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS])
       .then((name) => console.log(`Added Extension:  ${name}`))
       .catch((error) => console.log(`An error occurred: , ${error}`));
   }
