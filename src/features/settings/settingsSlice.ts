@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface MamePath {
-  path: string;
+interface MetaPayload {
+  meta?: string;
+}
+interface MamePath extends MetaPayload {
+  mamepath: string;
 }
 
-type CurrentSettingsState = {
+export type CurrentSettingsState = {
   isOpen: boolean;
 } & MamePath;
 
 let initialState: CurrentSettingsState = {
-  path: "./",
+  mamepath: "./from/redux",
   isOpen: false,
 };
 
@@ -17,9 +19,18 @@ const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
-    setMamePath(state, action: PayloadAction<MamePath>) {
-      const { path } = action.payload;
-      state.path = path;
+    returnElectronStore(state) {
+      console.log("returnElectronStore called");
+    },
+    setMamePath: {
+      reducer: (state, action: PayloadAction<MamePath>) => {
+        console.log("setMamePath called", state, action);
+        const { mamepath } = action.payload;
+        state.mamepath = mamepath;
+      },
+      prepare: (mamepath: string) => {
+        return { payload: { mamepath, meta: "settings.mamepath" } };
+      },
     },
     setSettingsOpen(state, action: PayloadAction<boolean>) {
       const isOpen = action.payload;

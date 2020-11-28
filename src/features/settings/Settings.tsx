@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -11,10 +11,15 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
+
 import { TransitionProps } from "@material-ui/core/transitions";
 import { setSettingsOpen } from "../../features/settings/settingsSlice";
+import { RootState } from "../../store/rootReducer";
+import SettingsContext from "./SettingsContext";
+import Mamepath from "./Mamepath";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,16 +43,15 @@ const Transition = React.forwardRef(function Transition(
 interface SettingsProps {
   isOpen: boolean;
 }
-
 export default function Settings(props: SettingsProps) {
   const dispatch = useDispatch();
   const classes = useStyles();
   const { isOpen } = props;
-
+  const settings = useSelector((state: RootState) => state.settings);
   const handleClose = () => dispatch(setSettingsOpen(false));
 
   return (
-    <div>
+    <SettingsContext.Provider value={settings}>
       <Dialog
         fullScreen
         open={isOpen}
@@ -73,8 +77,8 @@ export default function Settings(props: SettingsProps) {
           </Toolbar>
         </AppBar>
         <List>
-          <ListItem button>
-            <ListItemText primary="Phone ringtone" secondary="Titania" />
+          <ListItem>
+            <Mamepath />
           </ListItem>
           <Divider />
           <ListItem button>
@@ -85,6 +89,6 @@ export default function Settings(props: SettingsProps) {
           </ListItem>
         </List>
       </Dialog>
-    </div>
+    </SettingsContext.Provider>
   );
 }

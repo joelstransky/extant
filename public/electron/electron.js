@@ -1,27 +1,35 @@
 const path = require("path");
-const fs = require("fs");
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow } = require("electron");
+const debug = require("electron-debug");
 const isDev = require("electron-is-dev");
-var shell = require("shelljs");
+const windowStateKeeper = require("electron-window-state");
+const { bridge } = require("./bridge");
+const { store } = require("./store");
 const { setMenu } = require("./menu");
 const { execute } = require("./process");
-// Conditionally include the dev tools installer to load React Dev Tools
-// let installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS;
+console.log("store is", store.store);
+try {
+  require("electron-reloader")(module);
+} catch (_) {}
 let win;
-
-if (isDev) {
-  // const devTools = require("electron-devtools-installer");
-}
+debug();
 setMenu();
 // Handle creating/removing shortcuts on Windows when installing/uninstalling
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
 async function createWindow() {
+  // Load the previous state with fallback to defaults
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 640,
+    defaultHeight: 480,
+  });
   // Create the browser window.
   win = new BrowserWindow({
-    width: 640,
-    height: 480,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     webPreferences: {
       nodeIntegration: false, // is default value after Electron v5
       contextIsolation: true, // protect against prototype pollution
@@ -29,6 +37,11 @@ async function createWindow() {
       preload: path.join(__dirname, "preload.js"), // use a preload script
     },
   });
+
+  // Let us register listeners on the window, so we can update the state
+  // automatically (the listeners will be removed when the window is closed)
+  // and restore the maximized or full screen state
+  mainWindowState.manage(win);
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
@@ -38,17 +51,7 @@ async function createWindow() {
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
 
-  ipcMain.on("toMain", (event, args) => {
-    console.log("toMain received");
-    execute();
-    win.webContents.send("fromMain", { success: "there was success" });
-  });
-  // Open the DevTools.
-  win.webContents.on("did-frame-finish-load", () => {
-    if (isDev) {
-      win.webContents.openDevTools({ mode: "right" });
-    }
-  });
+  bridge.init(win, store);
 }
 
 // This method will be called when Electron has finished
