@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-
+import * as CONSTS from "./consts";
 import { getStore } from "./store";
 import "./index.css";
 // import App from "./App";
@@ -38,9 +38,8 @@ const render = () => {
     document.getElementById("root")
   );
 };
-
 window.Extant.api
-  .invoke("toMain", { type: "GetElectronStore" })
+  .invoke(CONSTS.MAIN_CHANNEL_IN, { type: "GetElectronStore" })
   .then((message: IpcData) => {
     console.log("payload is", message.payload);
     store = getStore(message.payload);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -14,12 +14,20 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
-
+import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import { TransitionProps } from "@material-ui/core/transitions";
-import { setSettingsOpen } from "../../features/settings/settingsSlice";
+import Fade from "@material-ui/core/Fade";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import {
+  setSettingsOpen,
+  doImportListXML,
+} from "../../features/settings/settingsSlice";
 import { RootState } from "../../store/rootReducer";
 import SettingsContext from "./SettingsContext";
+import { AppContext } from "../../App";
 import Mamepath from "./Mamepath";
+import { ListItemIcon, ListItemSecondaryAction } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,8 +56,9 @@ export default function Settings(props: SettingsProps) {
   const classes = useStyles();
   const { isOpen } = props;
   const settings = useSelector((state: RootState) => state.settings);
+  const app = useContext(AppContext);
   const handleClose = () => dispatch(setSettingsOpen(false));
-
+  const handleImport = () => dispatch(doImportListXML(true));
   return (
     <SettingsContext.Provider value={settings}>
       <Dialog
@@ -81,11 +90,29 @@ export default function Settings(props: SettingsProps) {
             <Mamepath />
           </ListItem>
           <Divider />
-          <ListItem button>
+          <ListItem button onClick={handleImport}>
+            <ListItemIcon>
+              {app.isReady ? (
+                <CheckCircleOutlineIcon />
+              ) : (
+                <HighlightOffOutlinedIcon />
+              )}
+            </ListItemIcon>
             <ListItemText
-              primary="Default notification ringtone"
-              secondary="Tethys"
+              primary="Import Completed"
+              secondary="listXML.xml is missing"
             />
+            <ListItemSecondaryAction>
+              <Fade
+                in
+                style={{
+                  transitionDelay: "800ms",
+                }}
+                unmountOnExit
+              >
+                <CircularProgress />
+              </Fade>
+            </ListItemSecondaryAction>
           </ListItem>
         </List>
       </Dialog>

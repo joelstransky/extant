@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import clsx from "clsx";
+import { AppContext } from "../../App";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -8,7 +9,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Typography from "@material-ui/core/Typography";
 import Badge from "@material-ui/core/Badge";
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import * as CONSTS from "./consts";
+import * as CONSTS from "../../consts";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -56,6 +57,7 @@ interface DashBarProps {
 const DashBar = (props: DashBarProps) => {
   const classes = useStyles();
   const { isOpen, onOpen } = props;
+  const app = useContext(AppContext);
 
   return (
     <AppBar
@@ -85,7 +87,7 @@ const DashBar = (props: DashBarProps) => {
           Extant
         </Typography>
         <IconButton color="inherit">
-          <Badge badgeContent={4} color="secondary">
+          <Badge badgeContent={app.isReady ? 0 : 1} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>

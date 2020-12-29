@@ -1,9 +1,10 @@
 const is = require("electron-is");
+const { spawn, execFile } = require("child_process");
+const { store } = require("./store");
 const execute = () => {
-  const process = require("child_process");
   const cmd = is.windows() ? "test.bat" : "public/test.sh";
   console.log("executing...", cmd);
-  const child = process.spawn(cmd);
+  const child = spawn(cmd);
 
   child.on("error", function (err) {
     console.log("stderr: <" + err + ">");
@@ -26,4 +27,36 @@ const execute = () => {
   });
 };
 
+const cli = (cmd) => {
+  const mamepath = store.get("settings.mamepath");
+  return new Promise((resolve, reject) => {
+    const child = execFile(
+      mamepath,
+      cmd.split(" "),
+      { cwd: "/Applications/mame0225-64bit/", maxBuffer: 1024 * 4096 },
+      (error, stdout, stderr) => {
+        if (error) {
+          console.log("stderr: <" + stderr + ">");
+          throw error;
+        }
+        // console.log("stdout", stdout);
+        resolve(stdout);
+      }
+    );
+
+    child.on("close", function (code) {
+      if (code === 0) {
+        console.log("child process complete.");
+      } else {
+        console.log("child process exited with code " + code);
+      }
+    });
+  });
+};
+
 exports.execute = execute;
+exports.cli = cli;
+// send
+// *response
+// receive
+// *respond

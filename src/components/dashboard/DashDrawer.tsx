@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
-import * as CONSTS from "./consts";
+import * as CONSTS from "../../consts";
 import { mainListItems, SecondaryListItems } from "./ListItems";
 
 const useStyles = makeStyles((theme) => ({

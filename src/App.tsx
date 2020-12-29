@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   CssBaseline,
@@ -11,6 +11,7 @@ import { HashRouter } from "react-router-dom";
 import { RootState } from "./store/rootReducer";
 import Settings from "./features/settings/Settings";
 import Dashboard from "./components/dashboard/Dashboard";
+import * as CONSTS from "./consts";
 import "./App.css";
 
 let theme = createMuiTheme({
@@ -23,7 +24,21 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
 }));
+export type App = {
+  isReady: boolean;
+};
+export const AppContext = React.createContext<Partial<App>>({});
 const App: React.FC = () => {
+  const [isReady, setReady] = useState(false);
+  useEffect(() => {
+    window.Extant.api
+      .invoke(CONSTS.MAIN_CHANNEL_IN, {
+        type: CONSTS.CHECK_LIST_XML,
+      })
+      .then((data) => {
+        console.log("check is resolved.", data);
+      });
+  }, []);
   const classes = useStyles();
   const { isOpen } = useSelector((state: RootState) => state.settings);
   return (
@@ -31,8 +46,10 @@ const App: React.FC = () => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className={classes.root}>
-          <Dashboard />
-          <Settings isOpen={isOpen} />
+          <AppContext.Provider value={{ isReady }}>
+            <Dashboard />
+            <Settings isOpen={isOpen} />
+          </AppContext.Provider>
         </div>
 
         {/* <Container>

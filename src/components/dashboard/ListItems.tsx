@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { AppContext } from "../../App";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -26,12 +27,13 @@ export const mainListItems = (
 );
 
 export const SecondaryListItems = () => {
+  const app = useContext(AppContext);
   const dispatch = useDispatch();
   return (
     <div>
       <ListItem button onClick={() => dispatch(setSettingsOpen(true))}>
         <ListItemIcon>
-          <SettingsIcon />
+          <SettingsIcon style={{ color: app.isReady ? "green" : "red" }} />
         </ListItemIcon>
         <ListItemText primary="Settings" />
       </ListItem>

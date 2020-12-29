@@ -2,6 +2,7 @@ import { Button, TextField } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
+import * as CONSTS from "../../consts";
 import SettingsContext from "./SettingsContext";
 import { setMamePath } from "../../features/settings/settingsSlice";
 
@@ -10,7 +11,7 @@ const Mamepath = () => {
   const { mamepath } = useContext(SettingsContext);
   const handleLocate = () => {
     window.Extant.api
-      .invoke("toMain", { type: "ShowDialog" })
+      .invoke(CONSTS.MAIN_CHANNEL_IN, { type: "ShowDialog" })
       .then((result) => {
         console.log(result);
         dispatch(setMamePath(result.filePaths[0]));

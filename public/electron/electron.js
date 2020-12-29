@@ -8,6 +8,7 @@ const { store } = require("./store");
 const { setMenu } = require("./menu");
 const { execute } = require("./process");
 console.log("store is", store.store);
+console.log(store.get("settings.mamepath"));
 try {
   require("electron-reloader")(module);
 } catch (_) {}

@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
-const inChannels = ["fromMain"];
-const outChannels = ["toMain"];
+const consts = require("./consts");
+const inChannels = [consts.MAIN_CHANNEL_OUT];
+const outChannels = [consts.MAIN_CHANNEL_IN];
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld("Extant", {
@@ -18,7 +19,6 @@ contextBridge.exposeInMainWorld("Extant", {
       }
     },
     receive: (channel, func) => {
-      // let validChannels = ["fromMain"];
       if (inChannels.includes(channel)) {
         // Deliberately strip event as it includes `sender`
         ipcRenderer.on(channel, (event, ...args) => func(...args));
