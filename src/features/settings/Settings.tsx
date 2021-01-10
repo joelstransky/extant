@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -22,12 +22,14 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {
   setSettingsOpen,
   doImportListXML,
+  listXMLComplete,
 } from "../../features/settings/settingsSlice";
 import { RootState } from "../../store/rootReducer";
 import SettingsContext from "./SettingsContext";
 import { AppContext } from "../../App";
 import Mamepath from "./Mamepath";
 import { ListItemIcon, ListItemSecondaryAction } from "@material-ui/core";
+import * as Consts from "../../consts";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,6 +61,12 @@ export default function Settings(props: SettingsProps) {
   const app = useContext(AppContext);
   const handleClose = () => dispatch(setSettingsOpen(false));
   const handleImport = () => dispatch(doImportListXML(true));
+  useEffect(() => {
+    window.Extant.api.receive(Consts.LIST_XML_COMPLETE, () => {
+      console.log(`LIST_XML_COMPLETE`);
+      dispatch(listXMLComplete(false));
+    });
+  }, [dispatch]);
   return (
     <SettingsContext.Provider value={settings}>
       <Dialog
@@ -103,15 +111,17 @@ export default function Settings(props: SettingsProps) {
               secondary="listXML.xml is missing"
             />
             <ListItemSecondaryAction>
-              <Fade
-                in
-                style={{
-                  transitionDelay: "800ms",
-                }}
-                unmountOnExit
-              >
-                <CircularProgress />
-              </Fade>
+              {settings.isCreatingXML && (
+                <Fade
+                  in
+                  style={{
+                    transitionDelay: "800ms",
+                  }}
+                  unmountOnExit
+                >
+                  <CircularProgress />
+                </Fade>
+              )}
             </ListItemSecondaryAction>
           </ListItem>
         </List>

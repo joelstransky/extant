@@ -31,9 +31,9 @@ const cli = (cmd) => {
   const mamepath = store.get("settings.mamepath");
   return new Promise((resolve, reject) => {
     const child = execFile(
-      mamepath,
+      "mame64",
       cmd.split(" "),
-      { cwd: "/Applications/mame0225-64bit/", maxBuffer: 1024 * 4096 },
+      { cwd: mamepath, maxBuffer: 1024 * 4096 },
       (error, stdout, stderr) => {
         if (error) {
           console.log("stderr: <" + stderr + ">");

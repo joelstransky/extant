@@ -3,8 +3,8 @@ const fs = require("fs");
 const path = require("path");
 const consts = require("../consts");
 const { execute, cli } = require("../process");
-const showDialog = () =>
-  dialog.showOpenDialog({ properties: ["openFile", "multiSelections"] });
+const showDialog = (options = { properties: ["openDirectory"] }) =>
+  dialog.showOpenDialog(options);
 console.log("consts are ", consts);
 const readVgaPlay = async (mamepath) => {
   return new Promise((resolve, reject) => {
@@ -45,7 +45,10 @@ const bridge = {
           break;
         case "settings/doImportListXML":
           console.log("got doImportXML");
-          return require("./doImportListXML")();
+          require("./doImportListXML")().then(({ type }) => {
+            win.webContents.send(type);
+          });
+          break;
         default:
           break;
       }

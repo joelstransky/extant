@@ -1,3 +1,4 @@
+import path from "path";
 import { Button, TextField } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import React, { useContext } from "react";
@@ -14,7 +15,7 @@ const Mamepath = () => {
       .invoke(CONSTS.MAIN_CHANNEL_IN, { type: "ShowDialog" })
       .then((result) => {
         console.log(result);
-        dispatch(setMamePath(result.filePaths[0]));
+        dispatch(setMamePath(`${result.filePaths[0]}${path.sep}`));
       });
   };
   return (

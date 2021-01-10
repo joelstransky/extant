@@ -24,10 +24,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
 }));
-export type App = {
+export type AppProps = {
   isReady: boolean;
 };
-export const AppContext = React.createContext<Partial<App>>({});
+export const AppContext = React.createContext<Partial<AppProps>>({});
 const App: React.FC = () => {
   const [isReady, setReady] = useState(false);
   useEffect(() => {
@@ -37,6 +37,7 @@ const App: React.FC = () => {
       })
       .then((data) => {
         console.log("check is resolved.", data);
+        setReady(data);
       });
   }, []);
   const classes = useStyles();

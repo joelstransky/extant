@@ -52,6 +52,9 @@ const settingsSlice = createSlice({
         return { payload: { isCreatingXML, meta: "noop" } };
       },
     },
+    listXMLComplete(state, action: PayloadAction<boolean>) {
+      state.isCreatingXML = action.payload;
+    },
   },
 });
 
@@ -66,6 +69,7 @@ export const {
   setMamePath,
   setSettingsOpen,
   doImportListXML,
+  listXMLComplete,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;
