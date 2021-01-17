@@ -10,16 +10,21 @@ interface MamePath extends MetaPayload {
 interface ListXML extends MetaPayload {
   isCreatingXML: boolean;
 }
+interface ConvertXML extends MetaPayload {
+  isConvertingXML: boolean;
+}
 
 export type CurrentSettingsState = {
   isOpen: boolean;
 } & ListXML &
+  ConvertXML &
   MamePath;
 
 let initialState: CurrentSettingsState = {
   mamepath: "./from/redux",
   isOpen: false,
   isCreatingXML: false,
+  isConvertingXML: false,
 };
 
 const settingsSlice = createSlice({
@@ -44,16 +49,19 @@ const settingsSlice = createSlice({
       state.isOpen = isOpen;
     },
     doImportListXML: {
-      reducer: (state, action: PayloadAction<ListXML>) => {
-        const { isCreatingXML } = action.payload;
-        state.isCreatingXML = isCreatingXML;
+      reducer: (state) => {
+        state.isCreatingXML = true;
       },
-      prepare: (isCreatingXML: boolean) => {
-        return { payload: { isCreatingXML, meta: "noop" } };
-      },
+      prepare: () => ({ payload: { meta: "noop" } }),
     },
-    listXMLComplete(state, action: PayloadAction<boolean>) {
-      state.isCreatingXML = action.payload;
+    listXMLComplete(state) {
+      state.isCreatingXML = false;
+    },
+    doListXML2js: {
+      reducer: (state) => {
+        state.isConvertingXML = true;
+      },
+      prepare: () => ({ payload: { meta: "noop" } }),
     },
   },
 });
@@ -70,6 +78,7 @@ export const {
   setSettingsOpen,
   doImportListXML,
   listXMLComplete,
+  doListXML2js,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

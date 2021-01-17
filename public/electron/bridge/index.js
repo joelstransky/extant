@@ -2,7 +2,7 @@ const { dialog, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const consts = require("../consts");
-const { execute, cli } = require("../process");
+const { cli } = require("../process");
 const showDialog = (options = { properties: ["openDirectory"] }) =>
   dialog.showOpenDialog(options);
 console.log("consts are ", consts);
@@ -49,6 +49,10 @@ const bridge = {
             win.webContents.send(type);
           });
           break;
+        case "settings/doListXML2js":
+          console.log("got doListXML2js");
+          require("./doConvertXML")().then(({ type }) => {});
+          break;
         default:
           break;
       }
@@ -82,7 +86,6 @@ const bridge = {
         default:
           break;
       }
-      // execute();
     });
   },
 };

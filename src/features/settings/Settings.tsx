@@ -11,7 +11,6 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
@@ -22,6 +21,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {
   setSettingsOpen,
   doImportListXML,
+  doListXML2js,
   listXMLComplete,
 } from "../../features/settings/settingsSlice";
 import { RootState } from "../../store/rootReducer";
@@ -60,11 +60,12 @@ export default function Settings(props: SettingsProps) {
   const settings = useSelector((state: RootState) => state.settings);
   const app = useContext(AppContext);
   const handleClose = () => dispatch(setSettingsOpen(false));
-  const handleImport = () => dispatch(doImportListXML(true));
+  const handleImport = () => dispatch(doImportListXML());
   useEffect(() => {
     window.Extant.api.receive(Consts.LIST_XML_COMPLETE, () => {
       console.log(`LIST_XML_COMPLETE`);
-      dispatch(listXMLComplete(false));
+      dispatch(listXMLComplete());
+      dispatch(doListXML2js());
     });
   }, [dispatch]);
   return (

@@ -5,27 +5,12 @@ import * as CONSTS from "../consts";
 import rootReducer, { RootState } from "./rootReducer";
 import { CurrentSettingsState } from "../features/settings/settingsSlice";
 
-// function logger({ getState }) {
-//   return (next) => (action) => {
-//     console.log("will dispatch", action);
-
-//     // Call the next dispatch method in the middleware chain.
-//     const returnValue = next(action);
-
-//     console.log("state after dispatch", getState());
-
-//     // This will likely be the action itself, unless
-//     // a middleware further in chain changed it.
-//     return returnValue;
-//   };
-// }
-
 const electronUpdater: Middleware<{}, RootState> = (store) => (next) => (
   action
 ) => {
   const { payload } = action;
   console.log("running electronUpdater", action);
-  if (payload.meta) {
+  if (payload && payload.meta) {
     window.Extant.api.send(CONSTS.MAIN_CHANNEL_IN, action);
   }
   return next(action);
