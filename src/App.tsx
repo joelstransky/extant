@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { HashRouter } from "react-router-dom";
 import { RootState } from "./store/rootReducer";
 import Settings from "./features/settings/Settings";
-import Dashboard from "./components/dashboard/Dashboard";
+import Dashboard from "./features/dashboard/Dashboard";
 import * as CONSTS from "./consts";
 import "./App.css";
 

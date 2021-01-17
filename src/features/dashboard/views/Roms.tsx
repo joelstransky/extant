@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import path from "path";
 import * as fs from "fs";
 import { parseStringPromise } from "xml2js";
-import { mamepathSelector } from "../../../features/settings/settingsSlice";
+import { mamepathSelector } from "../../settings/settingsSlice";
 import { FormHelperText } from "@material-ui/core";
 import { setRomsJSON } from "./romsSlice";
 

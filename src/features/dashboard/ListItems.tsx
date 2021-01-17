@@ -7,7 +7,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import MemoryIcon from "@material-ui/icons/Memory";
 import SettingsIcon from "@material-ui/icons/Settings";
-import { setSettingsOpen } from "../../features/settings/settingsSlice";
+import { setSettingsOpen } from "../settings/settingsSlice";
 
 export const mainListItems = (
   <div>
