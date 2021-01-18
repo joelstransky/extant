@@ -1,7 +1,11 @@
 const { contextBridge, ipcRenderer } = require("electron");
 const consts = require("./consts");
 const errors = require("./errors");
-const inChannels = [consts.MAIN_CHANNEL_OUT, consts.LIST_XML_COMPLETE];
+const inChannels = [
+  consts.MAIN_CHANNEL_OUT,
+  consts.LIST_XML_COMPLETE,
+  consts.DISPATCH_FROM_ELECTRON,
+];
 const outChannels = [consts.MAIN_CHANNEL_IN];
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object

@@ -18,7 +18,7 @@ const doConvertXML = async () => {
           console.log("insert complete");
           err && console.log("error::", err);
         });
-        resolve({ type: consts.CONVERT_XML_COMPLETE });
+        resolve();
       });
     });
   });

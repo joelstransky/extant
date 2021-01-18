@@ -3,7 +3,6 @@ const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
 const { store } = require("../store");
-const consts = require("../consts");
 
 const doImportListXML = async () => {
   const mamepath = store.get("settings.mamepath");
@@ -31,7 +30,7 @@ const doImportListXML = async () => {
     mame.on("close", (code) => {
       if (code === 0) {
         console.log("child process complete.");
-        resolve({ type: consts.LIST_XML_COMPLETE });
+        resolve();
       } else {
         console.log("child process exited with code " + code);
         reject(code);

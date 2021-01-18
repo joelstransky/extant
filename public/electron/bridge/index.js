@@ -2,6 +2,7 @@ const { dialog, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const consts = require("../consts");
+const db = require("../db");
 const { cli } = require("../process");
 const showDialog = (options = { properties: ["openDirectory"] }) =>
   dialog.showOpenDialog(options);
@@ -45,13 +46,20 @@ const bridge = {
           break;
         case "settings/doImportListXML":
           console.log("got doImportXML");
-          require("./doImportListXML")().then(({ type }) => {
-            win.webContents.send(type);
+          require("./doImportListXML")().then(() => {
+            win.webContents.send(consts.LIST_XML_COMPLETE);
           });
           break;
         case "settings/doListXML2js":
           console.log("got doListXML2js");
-          require("./doConvertXML")().then(({ type }) => {});
+          require("./doConvertXML")().then(() => {
+            win.webContents.send(consts.CONVERT_XML_COMPLETE);
+          });
+          break;
+        case "roms/findROMS":
+          db.find(message.payload.query, (err, docs) => {
+            win.webContents.send();
+          });
           break;
         default:
           break;
@@ -64,7 +72,7 @@ const bridge = {
     // responds to invoke
     console.log("BRIDGE::", consts.MAIN_CHANNEL_IN);
     ipcMain.handle(consts.MAIN_CHANNEL_IN, async (event, message) => {
-      console.log("invoke toMain received");
+      console.log("invoke toMain received", message);
       switch (message.type) {
         case consts.CHECK_LIST_XML:
           // return Promise.resolve({});
@@ -83,6 +91,18 @@ const bridge = {
           return listXML();
         case "Mame64:ListAll":
           return listAll();
+        case consts.RESPOND_WITH_QUERY:
+          console.log("resp with q", message);
+          return new Promise((resolve, reject) => {
+            db.find(message.payload, (err, docs) => {
+              err && console.log("err is", err);
+              console.log("docs are", docs);
+              resolve(docs);
+            });
+          });
+        case consts.LAUNCH_ROM:
+          require("./launchRom")(message.payload.rom);
+          break;
         default:
           break;
       }

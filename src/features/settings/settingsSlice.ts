@@ -1,24 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store/rootReducer";
-interface MetaPayload {
-  meta?: string;
-}
-interface MamePath extends MetaPayload {
-  mamepath: string;
-}
-
-interface ListXML extends MetaPayload {
-  isCreatingXML: boolean;
-}
-interface ConvertXML extends MetaPayload {
-  isConvertingXML: boolean;
-}
-
-export type CurrentSettingsState = {
-  isOpen: boolean;
-} & ListXML &
-  ConvertXML &
-  MamePath;
 
 let initialState: CurrentSettingsState = {
   mamepath: "./from/redux",

@@ -1,12 +1,9 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../../store/rootReducer";
 
-interface SetRomsJSON {
-  json: null | {};
-}
-export type CurrentRomState = {} & SetRomsJSON;
 let initialState: CurrentRomState = {
-  json: null,
+  json: [],
+  query: null,
 };
 
 const romsSlice = createSlice({
@@ -14,8 +11,19 @@ const romsSlice = createSlice({
   initialState,
   reducers: {
     setRomsJSON(state, action: PayloadAction<SetRomsJSON>) {
+      console.log("setRomsjson", state, action);
       const { json } = action.payload;
-      state.json = action.payload;
+      state.json = json;
+    },
+    findROMS: {
+      reducer: (state, action: PayloadAction<FindRoms>) => {
+        console.log("findRoms", state, action);
+        const { query } = action.payload;
+        state.query = query;
+      },
+      prepare: (query: any) => {
+        return { payload: { query, meta: "roms.findROMS" } };
+      },
     },
   },
 });
@@ -26,6 +34,6 @@ export const romsJsonSelector = createSelector(
   (roms) => roms.json
 );
 
-export const { setRomsJSON } = romsSlice.actions;
+export const { setRomsJSON, findROMS } = romsSlice.actions;
 
 export default romsSlice.reducer;
